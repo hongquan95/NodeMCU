@@ -5,7 +5,7 @@
 char auth[] = "3dddac1594e74646bde292060be39113";    //AuthToken copy ở Blynk Project
 char ssid[] = "TOP";  //Tên wifi
 char pass[] = "0968457018";     //Mật khẩu wifi
-int x, y;
+int x, y, z;
 void setup()
 {
   Serial.begin(9600);
@@ -16,6 +16,24 @@ void readStt()
 {
  x = digitalRead(D2);
  y = digitalRead(D3);
+ z = digitalRead(D4);
+}
+
+BLYNK_WRITE(V4)
+{
+  String i = param.asStr();
+  Serial.print("STT is: ");
+  Serial.println(i);
+  delay(200);
+  
+  if (i == "Quan")
+  { 
+     readStt();
+     Blynk.email("You Stt", "Led 1 is:" + String(x) + " Led 2 is:" + String(y) + " Led 3 is:" + String(z));
+     Serial.println("Email is sent")
+     Blynk.virtualWrite(V4,"checked");
+     delay(200);
+  }
 }
 void writeStt(int x, int y)
 {
@@ -29,6 +47,4 @@ void writeStt(int x, int y)
 void loop()
 {
   Blynk.run();
-  readStt();
-  writeStt(x,y);
 }
